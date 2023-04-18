@@ -1,16 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from datetime import date
 
 class CustomUser(AbstractUser) :
-    STATUS = (
-        ('regular', 'regular'),
-        ('artist', 'artist'),
-        ('moderator', 'moderator')
-    )
 
-    email = models.EmailField(unique=True)
-    status = models.CharField(max_length=100, choices=STATUS, default='regular')
-    description = models.TextField('Description', max_length=600, default='', blank=True)
+    artist_since = models.DateField(default=date.today())
 
     def __str__(self) :
         return self.username
