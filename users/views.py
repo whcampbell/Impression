@@ -7,7 +7,7 @@ from .forms import UserRegistrationForm, LoginForm
 
 class SignupView(generic.CreateView) :
     form_class = UserRegistrationForm
-    success_url = reverse_lazy("login")
+    success_url = reverse_lazy("users:login")
     template_name = 'users/signup.html'
 
 
@@ -37,6 +37,6 @@ def login_view(request) :
 
 def logout_view(request) :
     logout(request)
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect(reverse('welcome'))
 
 # Create your views here.

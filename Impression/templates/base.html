@@ -1,0 +1,36 @@
+{# whoa mama, here we go #}
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+        <title>{% block title %}Impression{% endblock %}</title>
+    </head>
+
+    <body>
+        <div class='navbar'>
+            <ul>
+                <li>link</li>
+                <li>second link</li>
+            </ul>
+        </div>
+
+        <div class='main'>
+            <h1>{% block header %}Welcome{% endblock %}</h1>
+            {% block content %}
+                <p>
+                    This is the big guy that does all the stuff. I feel so
+                    giddy right no for no reason. mmmmmmmmmmmm code. 
+                    Hire me. 
+                </p> 
+            {% endblock content %}
+        </div>
+
+        <footer>
+            <p>Do you love me?</p>
+        </footer>
+    </body>
+
+</html>
+
