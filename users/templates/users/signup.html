@@ -1,16 +1,13 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
+{% load static %}
 
-<html lang="en">
-    <head>
-        <title>Impression | Sign Up</title>
-    </head>
+{% block title %}Impression | Sign Up{% endblock %}
+{% block header %}Sign Up{% endblock %}
 
-    <body>
-        <form method="post">
-            {% csrf_token %}
-            {{ form }}
-            <input type="submit" value="Sign Up">
-        </form>
-    </body>
-
-</html>
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Sign Up">
+</form>
+{% endblock content %}

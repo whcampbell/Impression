@@ -1,24 +1,19 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
 
-<html lang="en">
-    <head>
-        <title>Impression</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'login/style.css' %}">
-    </head>
+{% block title %}Impression | Log In{% endblock %}
+{% block header %}Log In{% endblock %}
 
-    <body>
-        <h1>login</h1>
-        <p>
-            Create a page to represent your work, or just message
-            other artists
-        </p>
+{% block content %}
+<h1>login</h1>
+<p>
+    Create a page to represent your work, or just message
+    other artists
+</p>
 
-        <form method="post">
-            {% csrf_token %}
-            {{ form }}
-            <input type="submit" value="Log In">
-        </form>
-    </body>
-
-</html>
+<form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Log In">
+</form>
+{% endblock content %}
