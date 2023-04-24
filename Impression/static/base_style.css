@@ -1,8 +1,31 @@
-body {
+body, html {
     height:100%;
     margin:0px;
 }
 
 h1 {
     font-family: Verdana, Tahoma, sans-serif;
+}
+
+.navbar ul {
+    margin:0px;
+    list-style-type: none;
+    background-color:#c4c4c4;
+}
+
+.navbar li {
+    display: inline;
+    margin-left:20px;
+    margin-right:20px;
+    vertical-align: middle;
+}
+
+.navbar a {
+    color:#000000;
+    text-decoration: none;
+}
+
+#logo {
+    height:65px;
+    width:65px;
 }

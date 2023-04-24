@@ -12,8 +12,38 @@
     <body>
         <div class='navbar'>
             <ul>
-                <li>link</li>
-                <li>second link</li>
+                <li>
+                    <a href="{% url 'welcome' %}">
+                        <img id='logo' alt='logo' src="{% static 'images/Impression_Logo.png' %}">
+                    </a>
+                </li>
+                {% if CustomUser.is_authenticated %}
+                <li>
+                    <a href="{% url 'users:logout' %}">Log Out</a>
+                </li>
+                <li>
+                    <a href="dummy">Profile</a>
+                </li>
+                <li>
+                    <a href="dummy">Messages</a>
+                </li>
+                {% else %}
+                <li>
+                    <a href="{% url 'users:signup' %}">Sign Up</a>
+                </li>
+                <li>
+                    <a href="{% url 'users:login' %}">Log In</a>
+                </li>
+                {% endif %}
+                <li>
+                    <a href="dummy">Gallery</a>
+                </li>
+                <li>
+                    <a href="dummy">Search</a>
+                </li>
+                <li>
+                    <a href="dummy">About</a>
+                </li>
             </ul>
         </div>
 
