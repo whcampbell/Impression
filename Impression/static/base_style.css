@@ -3,7 +3,16 @@ body, html {
     margin:0px;
 }
 
+body {
+    display:flex;
+    flex-direction: column;
+}
+
 h1 {
+    font-family: 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif
+}
+
+h2, h3, p {
     font-family: Verdana, Tahoma, sans-serif;
 }
 
@@ -23,6 +32,21 @@ h1 {
 .navbar a {
     color:#000000;
     text-decoration: none;
+}
+
+.content {
+    flex: 1 0 auto;
+}
+
+footer {
+    width:100%;
+    flex-shrink: 0;
+    background-color:#c4c4c4;
+}
+
+footer p {
+    line-height: 100px;
+    text-align: center;
 }
 
 #logo {
