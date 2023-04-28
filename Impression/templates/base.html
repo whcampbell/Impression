@@ -39,7 +39,7 @@
                     <a href="dummy">Gallery</a>
                 </li>
                 <li>
-                    <a href="dummy">Search</a>
+                    <a href="{% url 'search:search' %}">Search</a>
                 </li>
             </ul>
         </div>
@@ -56,7 +56,7 @@
         </div>
 
         <footer>
-            <p>This is a Will Campbell (IVy) production. <a href="{% url 'about' %}">Learn More.</a></p>
+            <p>This website is a Will Campbell (IVy) production. <a href="{% url 'about' %}">Learn More.</a></p>
         </footer>
     </body>
 

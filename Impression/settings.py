@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'welcome',
     'users',
     'about',
+    'search',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
