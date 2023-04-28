@@ -18,11 +18,12 @@ from django.contrib import admin
 from django.urls import include, path
 from welcome.views import index 
 from about.views import about
+from search.views import search
 
 urlpatterns = [
     path('', index, name='welcome'),
     path('about/', about, name='about'),
     path('users/', include('users.urls')),
-    path('search/', include('search.urls')),
+    path('search/', search, name='search'),
     path('admin/', admin.site.urls),
 ]

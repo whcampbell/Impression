@@ -1,12 +1,19 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.db.models import Q
 from users.models import CustomUser
-
-class SearchResultView(ListView) :
-    model = CustomUser
-    template_name = 'search/results.html'
+from .forms import SearchForm
 
 def search(request) :
-    return render(request, 'search/search.html')
+    if (not request.GET) :
+        form = SearchForm()
+        return render(request, 'search/search.html', {'form':form})
+    form = SearchForm(request.GET)
+    query = request.GET.get("search_query")
+    results = CustomUser.objects.filter(Q(username__icontains=query))
+    context = {
+        'form':form,
+        'results':results,
+    }
+    return render(request, 'search/search.html', context)
 
 # Create your views here.

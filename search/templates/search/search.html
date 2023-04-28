@@ -4,5 +4,15 @@
 {% block header %}Search{% endblock %}
 
 {% block content %}
-<p>Search form baybeee</p>
+    <form method="get" action="{% url 'search' %}">
+        {{ form }}
+        <input type="submit" value="Search">
+    </form>
+
+    {% if results %}
+        {% for item in results %}
+        <p>{{ item }}</p>
+        <p>Artist since {{ item.artist_since }}</p>
+        {% endfor %}
+    {% endif %}
 {% endblock content %}
