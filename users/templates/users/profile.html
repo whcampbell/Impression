@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block header %}{{ this_pages_user.username }}{% endblock %}
+
+{% block content %}
+<p>
+    Practicing since {{ this_pages_user.artist_since }}
+</p>
+{% endblock content %}

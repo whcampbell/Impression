@@ -4,12 +4,12 @@ from django.contrib.auth import login, logout, authenticate
 from django.views import generic
 from django.urls import reverse, reverse_lazy
 from .forms import UserRegistrationForm, LoginForm
+from .models import CustomUser
 
 class SignupView(generic.CreateView) :
     form_class = UserRegistrationForm
     success_url = reverse_lazy("users:login")
     template_name = 'users/signup.html'
-
 
 def login_view(request) :
     if request.method == 'POST':
@@ -39,4 +39,7 @@ def logout_view(request) :
     logout(request)
     return HttpResponseRedirect(reverse('welcome'))
 
+def profile(request, username) :
+    user = CustomUser.objects.get(username=username)
+    return render(request, 'users/profile.html', {'this_pages_user':user})
 # Create your views here.
