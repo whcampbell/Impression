@@ -22,7 +22,7 @@
                     <a href="{% url 'users:logout' %}">Log Out</a>
                 </li>
                 <li>
-                    <a href="dummy">Profile</a>
+                    <a href="{% url 'users:profile' username=user.username %}">Profile</a>
                 </li>
                 <li>
                     <a href="dummy">Messages</a>

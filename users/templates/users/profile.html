@@ -1,9 +1,23 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block header %}{{ this_pages_user.username }}{% endblock %}
+{% block header %}
+    {% if this_pages_user.main_photo == "no_image" %}
+        <img src="{% static 'images/Impression_Logo.png' %}" alt="artist's header image">
+    {% else %}
+        <img src="{{ this_pages_user.main_photo.url }}" alt="artist's header image">
+    {% endif %}
+    {{ this_pages_user.username }}
+{% endblock %}
 
 {% block content %}
 <p>
     Practicing since {{ this_pages_user.artist_since }}
 </p>
+{% if this_pages_user.username == user.username %}
+<p>
+    Change account settings?
+</p>
+{% endif %}
+
 {% endblock content %}
