@@ -36,6 +36,10 @@ h2, h3, p {
 
 .content {
     flex: 1 0 auto;
+    width:90%;
+    margin:auto;
+    margin-top:20px;
+    text-align:center;
 }
 
 footer {

@@ -7,6 +7,7 @@
     <head>
         <title>{% block title %}Impression{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="{% static 'base_style.css' %}">
+        {% block styles %}{% endblock %}
     </head>
 
     <body>
@@ -45,6 +46,7 @@
         </div>
 
         <div class='content'>
+            {% block highlight_photo %}{% endblock %}
             <h1>{% block header %}Impression{% endblock %}</h1>
             {% block content %}
                 <p>
