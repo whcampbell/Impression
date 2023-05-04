@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Impression | Messages{% endblock %}
+{% block header %}My Messages{% endblock %}
+
+{% block content %}
+{% for sender, message in messages %}
+    <div>
+        <h3>{{ sender }}</h3>
+        <p>
+            {{ message.title }}
+        </p>
+        <hr>
+    </div>
+{% endfor %}
+{% endblock content %}

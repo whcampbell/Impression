@@ -14,9 +14,31 @@ class CustomUser(AbstractUser) :
     def __str__(self) :
         return self.username
 
-class SliderImage() :
+class SliderImage(models.Model) :
     image = models.ImageField(upload_to=user_directory_path)
     user = models.ForeignKey("CustomUser", on_delete=models.CASCADE)
+
+class Message(models.Model) :
+    sender = models.ForeignKey(
+        "CustomUser", 
+        on_delete=models.CASCADE,
+        related_name="sent_messages"
+    )
+    receiver = models.ForeignKey(
+        "CustomUser", 
+        on_delete=models.CASCADE,
+        related_name="received_messages"
+    )
+    time_sent = models.DateTimeField(default=timezone.now)
+    title = models.CharField(max_length=64, default="New Message")
+    body = models.TextField()
+    read = models.BooleanField()
+
+    class Meta:
+        ordering = ['-time_sent']
+
+    def __str__(self) :
+        return self.title
 
 
 # Create your models here.
