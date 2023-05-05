@@ -5,12 +5,26 @@
 
 {% block content %}
 {% for sender, message in messages %}
-    <div>
-        <h3>{{ sender }}</h3>
-        <p>
-            {{ message.title }}
-        </p>
-        <hr>
-    </div>
+    {% if message.read %}
+        <a href="{% url 'users:message_detail' id=message.id %}">
+            <div style="background-color:#D4D4D4">
+                <h3>{{ sender }}</h3>
+                <p>
+                    {{ message.title }}
+                </p>
+                <hr>
+            </div>
+        </a>
+    {% else %}
+        <a href="{% url 'users:message_detail' id=message.id %}">
+            <div style="background-color:#FFFFFF">
+                <h3>{{ sender }}</h3>
+                <p>
+                    {{ message.title }}
+                </p>
+                <hr>
+            </div>
+        </a>
+    {% endif %}    
 {% endfor %}
 {% endblock content %}

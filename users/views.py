@@ -5,6 +5,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.views import generic
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
+from django.core.exceptions import PermissionDenied
 from .forms import UserRegistrationForm, LoginForm
 from .models import CustomUser, Message
 
@@ -48,7 +49,7 @@ def profile(request, username) :
 def messages(request, username) :
     # User verification
     if (request.user.username != username) :
-        HttpResponseRedirect("welcome")
+        raise PermissionDenied
 
     # Get user/message objects
     user = CustomUser.objects.get(username=username)
@@ -69,7 +70,18 @@ def messages(request, username) :
     # send 'er
     return render(request, 'users/messages.html', {'messages':finalized_messages})
 
-class MessageView(generic.DetailView) :
-    model = Message
+def message_detail(request, id) :
+    message = Message.objects.get(pk=id)
+
+    if (message.receiver.id != request.user.id) :
+        raise PermissionDenied
+    
+    message.read = True
+    message.save()
+    context = {
+        'message':message,
+        'username':request.user.username,
+    }
+    return render(request, 'users/message_detail.html', context)
 
 # Create your views here.

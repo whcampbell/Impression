@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %}Impression{% endblock %}
+{% block header %}{{ message.title }}{% endblock %}
+
+{% block content %}
+    <a href="{% url 'users:messages' username=username %}">Back To Messages</a>
+    {{ message.body|linebreaks }}
+{% endblock content %}
