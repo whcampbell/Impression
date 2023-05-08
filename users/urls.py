@@ -8,5 +8,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name="logout"),
     path('profile/<slug:username>', views.profile, name="profile"),
     path('messages/<slug:username>', views.messages, name="messages"),
+    path('compose_message', views.message_create, name='compose_message'),
     path('message/<int:id>', views.message_detail, name="message_detail"),
 ]

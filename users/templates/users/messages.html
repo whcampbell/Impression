@@ -4,6 +4,8 @@
 {% block header %}My Messages{% endblock %}
 
 {% block content %}
+<a href="{% url 'users:compose_message' %}">Compose Message</a>
+
 {% for sender, message in messages %}
     {% if message.read %}
         <a href="{% url 'users:message_detail' id=message.id %}">

@@ -6,7 +6,7 @@ from django.views import generic
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.core.exceptions import PermissionDenied
-from .forms import UserRegistrationForm, LoginForm
+from .forms import UserRegistrationForm, LoginForm, MessageForm
 from .models import CustomUser, Message
 
 class SignupView(generic.CreateView) :
@@ -83,5 +83,32 @@ def message_detail(request, id) :
         'username':request.user.username,
     }
     return render(request, 'users/message_detail.html', context)
+
+def message_create(request) :
+    if request.method == "POST" :
+        form = MessageForm(request.POST)
+        if form.is_valid() :
+            title = form.cleaned_data['title']
+            body = form.cleaned_data['body']
+            receiver = form.cleaned_data['receiver']
+
+            for name in receiver :
+                to_user = CustomUser.objects.get(username=name)
+                from_user = request.user
+                new_message = Message(
+                    title=title, 
+                    body=body, 
+                    sender = from_user,
+                    receiver = to_user,
+                    read=False
+                    )
+                new_message.save()
+
+            return HttpResponseRedirect(reverse('users:messages', args=[request.user.username]))
+    
+    else :
+        form = MessageForm()
+
+    return render(request, 'users/message_compose.html', {'form':form})
 
 # Create your views here.
