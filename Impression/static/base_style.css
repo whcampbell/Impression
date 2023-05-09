@@ -12,8 +12,13 @@ h1 {
     font-family: 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif
 }
 
-h2, h3, p {
+h2, h3, p, label {
     font-family: Verdana, Tahoma, sans-serif;
+}
+
+ul {
+    list-style-type: none;
+    font-family: Verdana, Tahoma, sans-serif
 }
 
 .navbar ul {

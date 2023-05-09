@@ -37,5 +37,5 @@ class MessageForm(forms.Form) :
     receiver = forms.MultipleChoiceField(
         label='Send to:',
         widget=forms.CheckboxSelectMultiple,
-        choices=USER_CHOICES,
+        choices=[],
     )

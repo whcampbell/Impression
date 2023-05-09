@@ -1,15 +1,13 @@
-from typing import Any, Dict
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib.auth import login, logout, authenticate
-from django.views import generic
+from django.views.generic import CreateView
 from django.urls import reverse, reverse_lazy
-from django.utils import timezone
 from django.core.exceptions import PermissionDenied
 from .forms import UserRegistrationForm, LoginForm, MessageForm
 from .models import CustomUser, Message
 
-class SignupView(generic.CreateView) :
+class SignupView(CreateView) :
     form_class = UserRegistrationForm
     success_url = reverse_lazy("users:login")
     template_name = 'users/signup.html'
@@ -108,6 +106,12 @@ def message_create(request) :
     
     else :
         form = MessageForm()
+
+        # TODO pull from users 'friends' field (does not exist yet)
+        form.fields['receiver'].choices = [
+            ('felicity', 'Mrs. Fox'),
+            ('test', 'Test'),
+            ]
 
     return render(request, 'users/message_compose.html', {'form':form})
 
