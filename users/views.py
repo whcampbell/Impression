@@ -107,11 +107,13 @@ def message_create(request) :
     else :
         form = MessageForm()
 
-        # TODO pull from users 'friends' field (does not exist yet)
-        form.fields['receiver'].choices = [
-            ('felicity', 'Mrs. Fox'),
-            ('test', 'Test'),
-            ]
+        friends = request.user.friends.all()
+        choice_list = []
+        for friend in friends :
+            choice_name = friend.username
+            choice_list.append((choice_name, choice_name))
+
+        form.fields['receiver'].choices = choice_list
 
     return render(request, 'users/message_compose.html', {'form':form})
 

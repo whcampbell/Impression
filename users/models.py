@@ -8,6 +8,7 @@ def user_directory_path(instance, filename):
 
 class CustomUser(AbstractUser) :
 
+    friends = models.ManyToManyField('self', blank=True)
     artist_since = models.DateField(default=timezone.now)
     main_photo = models.ImageField(upload_to=user_directory_path, default='no_image')
 
