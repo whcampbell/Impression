@@ -7,6 +7,16 @@ from django.core.exceptions import PermissionDenied
 from .forms import UserRegistrationForm, LoginForm, MessageForm
 from .models import CustomUser, Message
 
+# Helpers
+def populate_recipient_choices(user) :
+    friends = user.friends.all()
+    choice_list = []
+    for friend in friends :
+        choice_name = friend.username
+        choice_list.append((choice_name, choice_name))
+
+    return choice_list
+
 class SignupView(CreateView) :
     form_class = UserRegistrationForm
     success_url = reverse_lazy("users:login")
@@ -85,7 +95,10 @@ def message_detail(request, id) :
 def message_create(request) :
     if request.method == "POST" :
         form = MessageForm(request.POST)
-        if form.is_valid() :
+        form.fields['receiver'].choices = populate_recipient_choices(request.user)
+        if not form.is_valid() :
+            return render(request, 'users/message_compose.html', {'form':form})
+        else :
             title = form.cleaned_data['title']
             body = form.cleaned_data['body']
             receiver = form.cleaned_data['receiver']
@@ -103,17 +116,10 @@ def message_create(request) :
                 new_message.save()
 
             return HttpResponseRedirect(reverse('users:messages', args=[request.user.username]))
-    
+
     else :
         form = MessageForm()
-
-        friends = request.user.friends.all()
-        choice_list = []
-        for friend in friends :
-            choice_name = friend.username
-            choice_list.append((choice_name, choice_name))
-
-        form.fields['receiver'].choices = choice_list
+        form.fields['receiver'].choices = populate_recipient_choices(request.user)
 
     return render(request, 'users/message_compose.html', {'form':form})
 

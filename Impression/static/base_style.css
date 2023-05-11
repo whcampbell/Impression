@@ -18,7 +18,16 @@ h2, h3, p, label {
 
 ul {
     list-style-type: none;
-    font-family: Verdana, Tahoma, sans-serif
+    font-family: Verdana, Tahoma, sans-serif;
+}
+
+a {
+    font-family: Verdana, Tahoma, sans-serif;
+    color: #202020;
+}
+
+a:hover {
+    background-color: #A0A0A0;
 }
 
 .navbar ul {

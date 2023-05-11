@@ -33,7 +33,7 @@ class Message(models.Model) :
     time_sent = models.DateTimeField(default=timezone.now)
     title = models.CharField(max_length=64, default="New Message")
     body = models.TextField()
-    read = models.BooleanField()
+    read = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-time_sent']

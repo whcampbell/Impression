@@ -2,15 +2,6 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 from .models import CustomUser
 
-def create_choices() :
-    users = CustomUser.objects.all()
-    names = []
-    for user in users :
-        names.append((user.username, user.username))
-    return names
-
-USER_CHOICES = create_choices()
-
 class UserRegistrationForm(UserCreationForm) :
     class Meta:
         model = CustomUser
