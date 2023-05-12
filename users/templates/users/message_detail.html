@@ -5,5 +5,12 @@
 
 {% block content %}
     <a href="{% url 'users:messages' username=username %}">Back To Messages</a>
-    {{ message.body|linebreaks }}
+
+    {% if message.is_friend_request %}
+        <a href="{% url 'users:make_friends' sender=message.sender receiver=message.receiver %}">
+            Accept Friend Request?
+        </a>
+    {% else %}
+        {{ message.body|linebreaks }}
+    {% endif %}
 {% endblock content %}

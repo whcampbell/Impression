@@ -17,6 +17,7 @@ def populate_recipient_choices(user) :
 
     return choice_list
 
+# Views
 class SignupView(CreateView) :
     form_class = UserRegistrationForm
     success_url = reverse_lazy("users:login")
@@ -52,7 +53,12 @@ def logout_view(request) :
 
 def profile(request, username) :
     user = CustomUser.objects.get(username=username)
-    return render(request, 'users/profile.html', {'this_pages_user':user})
+    are_friends = request.user.friends.all().contains(user)
+    context = {
+        'this_pages_user':user,
+        'are_friends':are_friends,
+    }
+    return render(request, 'users/profile.html', context)
 
 def messages(request, username) :
     # User verification
@@ -122,5 +128,26 @@ def message_create(request) :
         form.fields['receiver'].choices = populate_recipient_choices(request.user)
 
     return render(request, 'users/message_compose.html', {'form':form})
+
+def make_friends(request, sender, receiver) :
+    friend_1 = CustomUser.objects.get(username=sender)
+    friend_2 = CustomUser.objects.get(username=receiver)
+
+    friend_1.friends.add(friend_2)
+
+    return HttpResponseRedirect(reverse('users:messages', args=[request.user.username]))
+
+def send_friends(request, receiver) :
+    new_friend = CustomUser.objects.get(username=receiver)
+
+    Message.objects.create(
+        title = "Friend Request From " + request.user.username,
+        body = "",
+        sender = request.user,
+        receiver = new_friend,
+        is_friend_request = True
+    ).save()
+
+    return HttpResponseRedirect(reverse('users:profile', args=[receiver]))
 
 # Create your views here.

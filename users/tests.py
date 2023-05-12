@@ -44,8 +44,8 @@ class MessageTestCase(TestCase) :
             receiver = testuser2,
         ).save()
 
-        self.assertTrue(testuser.sent_messages)
-        self.assertTrue(testuser2.received_messages)
+        self.assertTrue(testuser.sent_messages.all())
+        self.assertTrue(testuser2.received_messages.all())
 
 
 # Create your tests here.

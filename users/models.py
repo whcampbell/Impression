@@ -34,6 +34,7 @@ class Message(models.Model) :
     title = models.CharField(max_length=64, default="New Message")
     body = models.TextField()
     read = models.BooleanField(default=False)
+    is_friend_request = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-time_sent']
