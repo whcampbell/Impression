@@ -7,7 +7,7 @@
     <a href="{% url 'users:messages' username=username %}">Back To Messages</a>
 
     {% if message.is_friend_request %}
-        <a href="{% url 'users:make_friends' sender=message.sender receiver=message.receiver %}">
+        <a href="{% url 'users:make_friends' sender=message.sender %}">
             Accept Friend Request?
         </a>
     {% else %}

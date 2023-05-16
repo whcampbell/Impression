@@ -129,9 +129,9 @@ def message_create(request) :
 
     return render(request, 'users/message_compose.html', {'form':form})
 
-def make_friends(request, sender, receiver) :
+def make_friends(request, sender) :
     friend_1 = CustomUser.objects.get(username=sender)
-    friend_2 = CustomUser.objects.get(username=receiver)
+    friend_2 = CustomUser.objects.get(username=request.user)
 
     friend_1.friends.add(friend_2)
 

@@ -11,5 +11,5 @@ urlpatterns = [
     path('compose_message', views.message_create, name='compose_message'),
     path('message/<int:id>', views.message_detail, name="message_detail"),
     path('send-friends/<slug:receiver>', views.send_friends, name="send_friends"),
-    path('make-friends/<slug:sender>/<slug:receiver>', views.make_friends, name="make_friends"),
+    path('make-friends/<slug:sender>', views.make_friends, name="make_friends"),
 ]
