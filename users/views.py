@@ -60,29 +60,17 @@ def profile(request, username) :
     }
     return render(request, 'users/profile.html', context)
 
-def messages(request, username) :
-    # User verification
-    if (request.user.username != username) :
-        raise PermissionDenied
+def messages(request) :
+    if not request.user.is_authenticated :
+        return HttpResponseRedirect(reverse('users:login'))
 
-    # Get user/message objects
-    user = CustomUser.objects.get(username=username)
-    messages = Message.objects.filter(receiver=user.pk)
-
-    # get latest message per sender
-    finalized_messages = []
-    senders = []
-    for message in messages :
-
-        # if no messages found yet for this sender - just add
-        if (message.sender not in senders) :
-            senders.append(message.sender)
-            finalized_messages.append([message.sender, message])
-        # should be ordered by model metadata
-        # first one will always be latest
-
+    # I hear that this only works on Postgres!
+    # (select distinct on a single field rather than the whole object)
+    messages = Message.objects.order_by('sender', '-time_sent').distinct(
+        'sender').filter(receiver=request.user)
+    
     # send 'er
-    return render(request, 'users/messages.html', {'messages':finalized_messages})
+    return render(request, 'users/messages.html', {'messages':messages})
 
 def message_detail(request, id) :
     message = Message.objects.get(pk=id)
@@ -92,9 +80,15 @@ def message_detail(request, id) :
     
     message.read = True
     message.save()
+
+    other_messages = Message.objects.filter(
+        sender=message.sender,
+        receiver=message.receiver).exclude(pk=id)
+    
     context = {
-        'message':message,
+        'curr_message':message,
         'username':request.user.username,
+        'messages':other_messages,
     }
     return render(request, 'users/message_detail.html', context)
 
@@ -121,7 +115,7 @@ def message_create(request) :
                     )
                 new_message.save()
 
-            return HttpResponseRedirect(reverse('users:messages', args=[request.user.username]))
+            return HttpResponseRedirect(reverse('users:messages'))
 
     else :
         form = MessageForm()
@@ -132,6 +126,11 @@ def message_create(request) :
 def make_friends(request, sender) :
     friend_1 = CustomUser.objects.get(username=sender)
     friend_2 = CustomUser.objects.get(username=request.user)
+
+    Message.objects.get(
+        sender=sender, 
+        receiver=request.user, 
+        is_friend_request=True).delete()
 
     friend_1.friends.add(friend_2)
 

@@ -1,16 +1,23 @@
-{% extends 'base.html' %}
+{% extends 'users/messages.html' %}
 
 {% block title %}Impression{% endblock %}
-{% block header %}{{ message.title }}{% endblock %}
+{% block header %}{{ curr_message.title }}{% endblock %}
+
+
 
 {% block content %}
-    <a href="{% url 'users:messages' username=username %}">Back To Messages</a>
 
-    {% if message.is_friend_request %}
-        <a href="{% url 'users:make_friends' sender=message.sender %}">
+    {% if curr_message.is_friend_request %}
+        <a href="{% url 'users:make_friends' sender=curr_message.sender %}">
             Accept Friend Request?
         </a>
     {% else %}
-        {{ message.body|linebreaks }}
+        {{ curr_message.body|linebreaks }}
     {% endif %}
+
+    <p>
+        <a href="{% url 'users:messages' %}">Back to Messages</a>
+    </p>
+
+    {{ block.super }}
 {% endblock content %}
