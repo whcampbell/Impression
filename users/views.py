@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth import login, logout, authenticate
 from django.views.generic import CreateView
 from django.urls import reverse, reverse_lazy
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from .forms import UserRegistrationForm, LoginForm, MessageForm
 from .models import CustomUser, Message
 
@@ -124,17 +124,23 @@ def message_create(request) :
     return render(request, 'users/message_compose.html', {'form':form})
 
 def make_friends(request, sender) :
+    # consistent between code and tests - one is sender, two is receiver
     friend_1 = CustomUser.objects.get(username=sender)
-    friend_2 = CustomUser.objects.get(username=request.user)
+    friend_2 = request.user
 
-    Message.objects.get(
-        sender=sender, 
-        receiver=request.user, 
-        is_friend_request=True).delete()
+    # Delete the friend request message
+    # if it doesn't exist, someone may be trying to cheat the friend system
+    try :
+        Message.objects.get(
+            sender=friend_1, 
+            receiver=friend_2, 
+            is_friend_request=True).delete()
+    except ObjectDoesNotExist :
+        raise PermissionDenied
 
     friend_1.friends.add(friend_2)
 
-    return HttpResponseRedirect(reverse('users:messages', args=[request.user.username]))
+    return HttpResponseRedirect(reverse('users:messages'))
 
 def send_friends(request, receiver) :
     new_friend = CustomUser.objects.get(username=receiver)

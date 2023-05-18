@@ -1,5 +1,6 @@
 from django.test import TestCase, RequestFactory
 from .models import CustomUser, Message
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from . import views
 
 # Helpers
@@ -63,17 +64,28 @@ class FriendsTestCase(TestCase) :
         self.assertEqual(response.status_code, 302)
         self.assertEqual(self.two.received_messages.all().count(), 1)
 
-    def test_accept_friends(self) :
+    def test_make_friends(self) :
+        try :
+            list(Message.objects.get(sender=self.one, receiver=self.two))
+        except ObjectDoesNotExist :
+            request = self.factory.get("/users/send-friends/friend_2")
+            request.user = self.one
+            views.send_friends(request, "friend_2")  
+
         request = self.factory.get("/users/make-friends/friend_1")
         request.user = self.two
         response = views.make_friends(request, "friend_1")
         self.assertEqual(response.status_code, 302)
         self.assertEqual(self.one.friends.count(), 1)
 
-        # test adding a duplicate friend from the other way around
-        # (should not break or change anything)
+    def test_make_friends_non_consentually(self) :
+        request = self.factory.get("/users/make-friends/friend_2")
         request.user = self.one
-        views.make_friends(request, "friend_2")
-        self.assertEqual(self.two.friends.count(), 1)
+        try :
+            views.make_friends(request, "friend_2")
+            self.assertEqual(1, 2)
+        except PermissionDenied :
+            self.assertEqual(1, 1)
+
 
 # Create your tests here.
