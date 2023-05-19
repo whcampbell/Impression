@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Impression | Gallery{% endblock %}
+{% block header %}Gallery{% endblock %}
+
+{% block styles %}
+    <link rel='stylesheet' type='text/css' href="{% static 'users/user_style.css' %}">
+{% endblock %}
+
+{% block content %}
+    <p>
+        This is different from most galleries in that it is not curated. 
+        Quite the opposite is true, in fact. The selection of artists is 
+        purely random. There can be no biases in the algorithm when there 
+        is no algorithm in the first place. 
+    </p>
+    <p>
+        Please enjoy.
+    </p>
+
+    {% for artist in users %}
+        <div class='artist-div'>
+            <a href="{% url 'users:profile' username=artist.username %}">
+                <h2>{{ artist.username }}</h2>
+            </a>
+            <p>
+                Practicing since {{ artist.artist_since }}
+            </p>
+        </div>
+        {% if artist.main_photo == "no_image" %}
+            <img class='main_photo' src="{% static 'images/Impression_Logo.png' %}" alt="artist's header image">
+        {% else %}
+            <img class='main_photo' src="{{ artist.main_photo.url }}" alt="artist's header image">
+        {% endif %}
+    {% endfor %}
+
+{% endblock content %}

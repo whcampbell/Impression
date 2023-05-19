@@ -7,6 +7,7 @@ urlpatterns = [
     path('login/', views.login_view, name="login"),
     path('logout/', views.logout_view, name="logout"),
     path('profile/<slug:username>', views.profile, name="profile"),
+    path('gallery/', views.gallery, name="gallery"),
     path('messages/', views.messages, name="messages"),
     path('compose_message', views.message_create, name='compose_message'),
     path('message/<int:id>', views.message_detail, name="message_detail"),

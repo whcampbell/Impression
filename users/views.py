@@ -6,6 +6,7 @@ from django.urls import reverse, reverse_lazy
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from .forms import UserRegistrationForm, LoginForm, MessageForm
 from .models import CustomUser, Message
+from random import sample
 
 # Helpers
 def populate_recipient_choices(user) :
@@ -155,4 +156,12 @@ def send_friends(request, receiver) :
 
     return HttpResponseRedirect(reverse('users:profile', args=[receiver]))
 
-# Create your views here.
+def gallery(request) :
+
+    # yes evaluating the whole set is gross
+    # but that's the simplest way to randomize
+    # as long as there's only five users that won't matter
+    users = list(CustomUser.objects.all())
+    users = sample(users, 5)
+
+    return render(request, 'users/gallery.html', {'users':users})
