@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Impression | Edit Profile{% endblock %}
+{% block header %}Edit Profile Information{% endblock %}
+
+{% block content %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save Changes">
+    </form>
+{% endblock content %}

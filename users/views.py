@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib.auth import login, logout, authenticate
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from django.urls import reverse, reverse_lazy
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
-from .forms import UserRegistrationForm, LoginForm, MessageForm
+from .forms import UserRegistrationForm, LoginForm, MessageForm, CustomChangeForm
 from .models import CustomUser, Message
 from random import sample
 
@@ -23,6 +23,15 @@ class SignupView(CreateView) :
     form_class = UserRegistrationForm
     success_url = reverse_lazy("users:login")
     template_name = 'users/signup.html'
+
+class UserUpdateView(UpdateView) :
+    model = CustomUser
+    form_class = CustomChangeForm
+    template_name = 'users/user_update.html'
+
+    def get_success_url(self) :
+        return reverse('users:profile', args=[self.get_object().username])
+
 
 def login_view(request) :
     if request.method == 'POST':

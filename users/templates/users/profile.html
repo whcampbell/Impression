@@ -21,7 +21,7 @@
 
     {% if this_pages_user.username == user.username %}
         <p>
-            Change account settings?
+            <a href="{% url 'users:update' pk=user.pk %}">Edit Profile Information</a>
         </p>
     {% elif not are_friends %}
         <a href="{% url 'users:send_friends' receiver=this_pages_user.username %}">

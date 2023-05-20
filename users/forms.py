@@ -14,6 +14,9 @@ class UserRegistrationForm(UserCreationForm) :
         }
 
 class CustomChangeForm(UserChangeForm) :
+    # no ugly password message
+    password = None
+
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'artist_since', 'main_photo',]
