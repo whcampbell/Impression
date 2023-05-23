@@ -6,30 +6,30 @@
 {% endblock %}
 
 {% block highlight_photo %}
-    {% if this_pages_user.main_photo == "no_image" %}
+    {% if host_user.main_photo == "no_image" %}
         <img class='main_photo' src="{% static 'images/Impression_Logo.png' %}" alt="artist's header image">
     {% else %}
-        <img class='main_photo' src="{{ this_pages_user.main_photo.url }}" alt="artist's header image">
+        <img class='main_photo' src="{{ host_user.main_photo.url }}" alt="artist's header image">
     {% endif %}
 {% endblock %}
 
 {% block header %}
-    {{ this_pages_user.username }}
+    {{ host_user.username }}
 {% endblock %}
 
 {% block content %}
-
-    {% if this_pages_user.username == user.username %}
+    {{ host_user.description|linebreaks }}
+    {% if host_user.username == user.username %}
         <p>
             <a href="{% url 'users:update' pk=user.pk %}">Edit Profile Information</a>
         </p>
-    {% elif not are_friends %}
-        <a href="{% url 'users:send_friends' receiver=this_pages_user.username %}">
+    {% elif is_logged_in and not are_friends %}
+        <a href="{% url 'users:send_friends' receiver=host_user.username %}">
             Send Friend Request?
         </a>
     {% endif %}
     <p>
-        Practicing since {{ this_pages_user.artist_since }}
+        Practicing since {{ host_user.artist_since }}
     </p>
 
 {% endblock content %}

@@ -5,7 +5,7 @@ from .models import CustomUser
 class UserRegistrationForm(UserCreationForm) :
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'artist_since', 'main_photo',]
+        fields = ['username', 'email', 'artist_since', 'main_photo', 'description',]
         widgets = {
             'password' : forms.PasswordInput(),
             'artist_since' : forms.DateInput(
@@ -19,7 +19,7 @@ class CustomChangeForm(UserChangeForm) :
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'artist_since', 'main_photo',]
+        fields = ['username', 'email', 'artist_since', 'main_photo', 'description',]
 
 class LoginForm(forms.Form) :
     username = forms.CharField(label="Username", required=True, max_length=20)

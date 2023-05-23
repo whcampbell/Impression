@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic import CreateView, UpdateView
 from django.urls import reverse, reverse_lazy
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
@@ -24,13 +25,17 @@ class SignupView(CreateView) :
     success_url = reverse_lazy("users:login")
     template_name = 'users/signup.html'
 
-class UserUpdateView(UpdateView) :
+class UserUpdateView(UserPassesTestMixin, UpdateView) :
     model = CustomUser
     form_class = CustomChangeForm
     template_name = 'users/user_update.html'
+    raise_exception = True
 
     def get_success_url(self) :
         return reverse('users:profile', args=[self.get_object().username])
+    
+    def test_func(self) :
+        return self.request.user.pk == self.get_object().pk
 
 
 def login_view(request) :
@@ -63,9 +68,12 @@ def logout_view(request) :
 
 def profile(request, username) :
     user = CustomUser.objects.get(username=username)
-    are_friends = request.user.friends.all().contains(user)
+    are_friends = False
+    if request.user.is_authenticated :
+        are_friends = request.user.friends.all().contains(user)
     context = {
-        'this_pages_user':user,
+        'host_user':user,
+        'is_logged_in':request.user.is_authenticated,
         'are_friends':are_friends,
     }
     return render(request, 'users/profile.html', context)
