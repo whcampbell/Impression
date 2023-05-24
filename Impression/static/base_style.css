@@ -26,6 +26,10 @@ a {
     color: #202020;
 }
 
+form {
+    margin-bottom:20px;
+}
+
 a:hover {
     background-color: #A0A0A0;
 }

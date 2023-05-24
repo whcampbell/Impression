@@ -9,7 +9,7 @@ def search(request) :
         return render(request, 'search/search.html', {'form':form})
     form = SearchForm(request.GET)
     query = request.GET.get("search_query")
-    results = CustomUser.objects.filter(Q(username__icontains=query))
+    results = CustomUser.objects.filter(Q(username__icontains=query) | Q(description__icontains=query))
     context = {
         'form':form,
         'results':results,

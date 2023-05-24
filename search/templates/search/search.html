@@ -11,8 +11,8 @@
 
     {% if results %}
         {% for item in results %}
-        <a href="{% url 'users:profile' username=item.username %}">{{ item.username }}</p>
-        <p>Artist since {{ item.artist_since }}</p>
+        <a href="{% url 'users:profile' username=item.username %}">{{ item.username }}</a>
+        <p>{{ item.description }}</p>
         {% endfor %}
     {% endif %}
 {% endblock content %}

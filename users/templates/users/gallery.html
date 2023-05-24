@@ -21,11 +21,15 @@
 
     {% for artist in users %}
         <div class='artist-div'>
+            <hr>
             <a href="{% url 'users:profile' username=artist.username %}">
                 <h2>{{ artist.username }}</h2>
             </a>
             <p>
                 Practicing since {{ artist.artist_since }}
+            </p>
+            <p>
+                {{ artist.description|linebreaks }}
             </p>
         </div>
         {% if artist.main_photo == "no_image" %}

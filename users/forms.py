@@ -16,10 +16,15 @@ class UserRegistrationForm(UserCreationForm) :
 class CustomChangeForm(UserChangeForm) :
     # no ugly password message
     password = None
-
+    
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'artist_since', 'main_photo', 'description',]
+        widgets = {
+            'artist_since' : forms.DateInput(
+                attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)', 'class': 'form-control'}
+            ),
+        }
 
 class LoginForm(forms.Form) :
     username = forms.CharField(label="Username", required=True, max_length=20)

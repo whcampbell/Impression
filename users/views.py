@@ -148,13 +148,13 @@ def make_friends(request, sender) :
 
     # Delete the friend request message
     # if it doesn't exist, someone may be trying to cheat the friend system
-    try :
-        Message.objects.get(
-            sender=friend_1, 
-            receiver=friend_2, 
-            is_friend_request=True).delete()
-    except ObjectDoesNotExist :
+    req_list = Message.objects.filter(
+        sender=friend_1, 
+        receiver=friend_2, 
+        is_friend_request=True)
+    if (req_list.count() == 0) :
         raise PermissionDenied
+    req_list.delete()
 
     friend_1.friends.add(friend_2)
 
