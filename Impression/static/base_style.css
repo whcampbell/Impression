@@ -60,6 +60,14 @@ a:hover {
     text-align:center;
 }
 
+.artist-div {
+    margin-bottom:40px;
+}
+
+.artist-photo {
+    margin-bottom:40px;
+}
+
 footer {
     width:100%;
     flex-shrink: 0;

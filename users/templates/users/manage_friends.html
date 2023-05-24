@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Impression | Friends{% endblock %}
+{% block header %}Your Friends{% endblock %}
+
+{% block content %}
+    {% if friends.count == 0 %}
+        <p>
+            It seems there's no one here... yet!
+        </p>
+        <p>
+            Get out there and make some, tiger.
+        </p>
+    {% else %}
+        {% for friend in friends %}
+            <div class='artist-div'>
+                <hr>
+                <a href="{% url 'users:profile' username=friend.username %}">
+                    <h2>{{ friend.username }}</h2>
+                </a>
+                <p>
+                    {{ friend.description|linebreaks }}
+                </p>
+                <a href="{% url 'users:remove_friend' username=friend.username %}">
+                    Remove Friend?
+                </a>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+{% endblock content %}

@@ -173,6 +173,15 @@ def send_friends(request, receiver) :
 
     return HttpResponseRedirect(reverse('users:profile', args=[receiver]))
 
+def manage_friends(request) :
+    friends = request.user.friends.all()
+    return render(request, 'users/manage_friends.html', {'friends':friends})
+
+def remove_friend(request, username) :
+    ex_friend = CustomUser.objects.get(username=username)
+    request.user.friends.remove(ex_friend)
+    return HttpResponseRedirect(reverse('users:manage_friends'))
+
 def gallery(request) :
 
     # yes evaluating the whole set is gross

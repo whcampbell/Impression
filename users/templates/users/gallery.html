@@ -33,9 +33,9 @@
             </p>
         </div>
         {% if artist.main_photo == "no_image" %}
-            <img class='main_photo' src="{% static 'images/Impression_Logo.png' %}" alt="artist's header image">
+            <img class='main_photo artist-photo' src="{% static 'images/Impression_Logo.png' %}" alt="artist's header image">
         {% else %}
-            <img class='main_photo' src="{{ artist.main_photo.url }}" alt="artist's header image">
+            <img class='main_photo artist-photo' src="{{ artist.main_photo.url }}" alt="artist's header image">
         {% endif %}
     {% endfor %}
 

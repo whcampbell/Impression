@@ -19,17 +19,21 @@
 
 {% block content %}
     {{ host_user.description|linebreaks }}
+    <p>
+        Practicing since {{ host_user.artist_since }}
+    </p>
     {% if host_user.username == user.username %}
         <p>
             <a href="{% url 'users:update' pk=user.pk %}">Edit Profile Information</a>
         </p>
+        <p>
+            <a href="{% url 'users:manage_friends' %}">See Friends List</a>
+        </p>
+
     {% elif is_logged_in and not are_friends %}
         <a href="{% url 'users:send_friends' receiver=host_user.username %}">
             Send Friend Request?
         </a>
     {% endif %}
-    <p>
-        Practicing since {{ host_user.artist_since }}
-    </p>
 
 {% endblock content %}
