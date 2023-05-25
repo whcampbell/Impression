@@ -16,4 +16,7 @@ urlpatterns = [
     path('make-friends/<slug:sender>', views.make_friends, name="make_friends"),
     path('manage-friends/', views.manage_friends, name="manage_friends"),
     path('remove-friend/<slug:username>', views.remove_friend, name="remove_friend"),
+    path('write-post', views.WritePostView.as_view(), name="write_post"),
+    path('read-post/<int:id>', views.read_post, name="read_post"),
+    path('delete-post/<int:id>', views.delete_post, name="delete_post"),
 ]

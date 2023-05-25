@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Impression | {{ curr_post.user }}'s Post{% endblock %}
+{% block header %}{{ curr_post.title }}{% endblock %}
+
+{% block content %}
+
+    {% if not curr_post.image == "no_image" %}
+        <img class='main_photo' src="{{ curr_post.image.url }}" alt="{{ curr_post.alt_text }}">
+    {% endif %}
+
+    <p>
+        {{ curr_post.body }}
+    </p>
+    <p>
+        {{ curr_post.post_date }}
+    </p>
+
+    {% if user == curr_post.user %}
+        <a href="{% url 'users:delete_post' id=curr_post.pk %}">
+            Delete This Post?
+        </a>
+    {% endif %}
+
+    <p>
+        <a href="{% url 'users:profile' username=curr_post.user.username %}">
+            Return to Profile Page
+        </a>
+    </p>
+
+    {% for post in post_list %}
+        <a href="{% url 'users:read_post' id=post.pk %}">
+            <hr>
+            <div>
+                <h3>{{ post.title }}</h3>
+                <p>{{ post.body|truncatewords:10 }}
+            </div>
+        </a>
+    {% endfor %}
+
+{% endblock content %}

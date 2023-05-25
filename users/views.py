@@ -1,12 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic import CreateView, UpdateView
 from django.urls import reverse, reverse_lazy
-from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
-from .forms import UserRegistrationForm, LoginForm, MessageForm, CustomChangeForm
-from .models import CustomUser, Message
+from django.core.exceptions import PermissionDenied
+from .forms import UserRegistrationForm, LoginForm, MessageForm, CustomChangeForm, BlogForm
+from .models import CustomUser, Message, BlogPost
 from random import sample
 
 # Helpers
@@ -24,6 +24,23 @@ class SignupView(CreateView) :
     form_class = UserRegistrationForm
     success_url = reverse_lazy("users:login")
     template_name = 'users/signup.html'
+
+class WritePostView(CreateView) :
+    form_class = BlogForm
+    template_name = 'users/write_post.html'
+
+    def get_success_url(self) :
+        return reverse('users:profile', args=[self.request.user.username])
+    
+    def form_valid(self, form) :
+        BlogPost.objects.create(
+            user=self.request.user,
+            title=form.cleaned_data['title'],
+            body=form.cleaned_data['body'],
+            image=form.cleaned_data['image'],
+            alt_text=form.cleaned_data['alt_text']
+        )
+        return HttpResponseRedirect(self.get_success_url())
 
 class UserUpdateView(UserPassesTestMixin, UpdateView) :
     model = CustomUser
@@ -71,10 +88,13 @@ def profile(request, username) :
     are_friends = False
     if request.user.is_authenticated :
         are_friends = request.user.friends.all().contains(user)
+
+    last_post = user.blogpost_set.first()
     context = {
         'host_user':user,
         'is_logged_in':request.user.is_authenticated,
         'are_friends':are_friends,
+        'last_post':last_post,
     }
     return render(request, 'users/profile.html', context)
 
@@ -191,3 +211,17 @@ def gallery(request) :
     users = sample(users, 5)
 
     return render(request, 'users/gallery.html', {'users':users})
+
+def read_post(request, id) :
+    post = get_object_or_404(BlogPost, pk=id)
+    post_list = BlogPost.objects.filter(user=post.user).exclude(pk=post.pk)
+    context = {
+        'curr_post':post,
+        'post_list':post_list,
+    }
+    return render(request, 'users/read_post.html', context)
+
+def delete_post(request, id) :
+    post = get_object_or_404(BlogPost, pk=id)
+    post.delete()
+    return HttpResponseRedirect(reverse('users:profile', args=[request.user.username]))

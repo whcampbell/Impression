@@ -4,6 +4,8 @@ from django.utils import timezone
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    if (type(instance) == BlogPost) :
+        return "user_{0}/{1}".format(instance.user.username, filename)
     return "user_{0}/{1}".format(instance.username, filename)
 
 class CustomUser(AbstractUser) :
@@ -16,9 +18,16 @@ class CustomUser(AbstractUser) :
     def __str__(self) :
         return self.username
 
-class SliderImage(models.Model) :
-    image = models.ImageField(upload_to=user_directory_path)
+class BlogPost(models.Model) :
+    title = models.CharField(default="My Post", max_length=128)
+    body = models.TextField(default="The World is Violet")
+    image = models.ImageField(upload_to=user_directory_path, default="no_image")
+    alt_text = models.CharField(default="Blog Post Picture", max_length=256)
+    post_date = models.DateTimeField(default = timezone.now)
     user = models.ForeignKey("CustomUser", on_delete=models.CASCADE)
+
+    class Meta:
+        ordering=["-post_date"]
 
 class Message(models.Model) :
     sender = models.ForeignKey(

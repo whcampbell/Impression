@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
-from .models import CustomUser
+from .models import CustomUser, BlogPost
 
 class UserRegistrationForm(UserCreationForm) :
     class Meta:
@@ -38,3 +38,9 @@ class MessageForm(forms.Form) :
         widget=forms.CheckboxSelectMultiple,
         choices=[],
     )
+
+class BlogForm(forms.ModelForm) :
+
+    class Meta :
+        model = BlogPost
+        fields = ['title', 'body', 'image', 'alt_text',]

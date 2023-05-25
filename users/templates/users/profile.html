@@ -29,11 +29,24 @@
         <p>
             <a href="{% url 'users:manage_friends' %}">See Friends List</a>
         </p>
+        <p>
+            <a href="{% url 'users:write_post' %}">Write Blog Post</a>
+        </p>
 
     {% elif is_logged_in and not are_friends %}
         <a href="{% url 'users:send_friends' receiver=host_user.username %}">
             Send Friend Request?
         </a>
     {% endif %}
+
+    {% if last_post %}
+        <a href="{% url 'users:read_post' id=last_post.pk %}">
+            <div>
+                <h3>{{ last_post.title }}</h3>
+                <p>{{ last_post.body|truncatewords:10 }}</p>
+            </div>
+        </a>
+    {% endif %}
+        
 
 {% endblock content %}
