@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.views import PasswordChangeView
 from django.views.generic import CreateView, UpdateView
 from django.urls import reverse, reverse_lazy
 from django.core.exceptions import PermissionDenied
@@ -54,6 +55,11 @@ class UserUpdateView(UserPassesTestMixin, UpdateView) :
     def test_func(self) :
         return self.request.user.pk == self.get_object().pk
 
+class PasswordView(PasswordChangeView) :
+    template_name = 'users/change_password.html'
+
+    def get_success_url(self) :
+        return reverse("users:profile", args=[self.request.user.username])
 
 def login_view(request) :
     if request.method == 'POST':
@@ -223,5 +229,9 @@ def read_post(request, id) :
 
 def delete_post(request, id) :
     post = get_object_or_404(BlogPost, pk=id)
+
+    if (post.user != request.user) :
+        raise PermissionDenied
+
     post.delete()
     return HttpResponseRedirect(reverse('users:profile', args=[request.user.username]))
