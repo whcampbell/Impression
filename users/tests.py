@@ -1,5 +1,5 @@
-from django.test import TestCase, RequestFactory
-from .models import CustomUser, Message
+from django.test import TestCase, RequestFactory, Client
+from .models import CustomUser, Message, BlogPost
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from . import views
 
@@ -13,6 +13,14 @@ def create_user(username, email) :
     testuser.set_password("thisisatest00")
     testuser.save()
     return testuser
+
+def create_msg(user1, user2, title) :
+    return Message.objects.create(
+        sender = user1,
+        receiver = user2,
+        title = title,
+        body = "hello there",
+    )
 
 
 # Tests
@@ -32,11 +40,13 @@ class UserTestCase(TestCase) :
         self.assertTrue(self.user.check_password("thisisatest00"))
 
 
-# Test actions with the 'Message' model
+# Test actions with the 'Message' model and views
 class MessageTestCase(TestCase) :
     def setUp(self) :
         self.user_one = create_user("Tets", "tets@gmail.com")
         self.user_two = create_user("Test2", "test2@gmail.com")
+        self.client = Client()
+        self.client.login(username='Test2', password='thisisatest00')
 
     def test_create_message(self) :
         Message.objects.create(
@@ -49,6 +59,24 @@ class MessageTestCase(TestCase) :
         self.assertEqual(self.user_one.sent_messages.all().count(), 1)
         self.assertEqual(self.user_two.received_messages.all().count(), 1)
 
+    def test_show_most_recent_only(self) :
+        create_msg(self.user_one, self.user_two, "first")
+        create_msg(self.user_one, self.user_two, "second")
+
+        response = self.client.get("/users/messages/")
+        messages = response.context['messages']
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(response.context['messages'][0].title, "second")
+
+    def test_cannot_see_others_mail(self) :
+        msg = create_msg(self.user_one, self.user_two, "secret stuff")
+        url = '/users/message/' + str(msg.pk)
+        create_user("black_hat", "badguy@gmail.com")
+        self.client.logout()
+        self.client.login(username="black_hat", password="thisisatest00")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+
 
 # Test the views which add friend-to-friend relationships
 class FriendsTestCase(TestCase) :
@@ -56,6 +84,7 @@ class FriendsTestCase(TestCase) :
         self.one = create_user("friend_1", "one@gmail.com")
         self.two = create_user("friend_2", "two@gmail.com")
         self.factory = RequestFactory()
+        self.client = Client()
 
     def test_send_friends(self) :
         request = self.factory.get("/users/send-friends/friend_2")
@@ -86,6 +115,51 @@ class FriendsTestCase(TestCase) :
             self.assertEqual(1, 2)
         except PermissionDenied :
             self.assertEqual(1, 1)
+    
+    def test_remove_friend(self) :
+        self.one.friends.add(self.two)
+        self.assertEqual(self.one.friends.count(), 1)
+
+        self.client.logout()
+        self.client.login(username="friend_1", password="thisisatest00")
+
+        self.client.get('/users/remove-friend/' + self.two.username)
+        self.assertEqual(self.one.friends.count(), 0)
+
+    def test_remove_already_isnt_friend(self) :
+        self.client.logout()
+        create_user("black_hat", "badguy@gmail.com")
+        self.client.login(username="black_hat", password="thisisatest00")
+
+        response = self.client.get('/users/remove-friend/' + self.one.username)
+        self.assertEqual(response.status_code, 302)
+
+class BlogTestCase(TestCase) :
+    def setUp(self) :
+        self.user = create_user("influencer", "foot_master@onlyfans.com")
+        self.post = BlogPost.objects.create(
+            user=self.user, 
+            title="Who let the dogs out?",
+        )
+        self.pk = self.post.pk
+        self.client = Client()
+    
+    def test_no_other_posts(self) :
+        url = '/users/read-post/' + str(self.pk)
+        response = self.client.get(url)
+        curr = response.context['curr_post']
+        posts = response.context['post_list']
+        self.assertEqual(curr.title, "Who let the dogs out?")
+        self.assertEqual(posts.count(), 0)
+    
+    def test_deleting_others_posts_forbidden(self) :
+        create_user("black_hat", "badguy@gmail.com")
+        self.client.logout()
+        self.client.login(username="black_hat", password="thisisatest00")
+        url = '/users/delete-post/' + str(self.pk)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.post.title, "Who let the dogs out?")
 
 
 # Create your tests here.
