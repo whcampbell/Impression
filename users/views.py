@@ -90,16 +90,21 @@ def logout_view(request) :
     return HttpResponseRedirect(reverse('welcome'))
 
 def profile(request, username) :
-    user = CustomUser.objects.get(username=username)
+    host = CustomUser.objects.get(username=username)
+    guest = request.user
     are_friends = False
-    if request.user.is_authenticated :
-        are_friends = request.user.friends.all().contains(user)
+    if guest.is_authenticated :
+        are_friends = guest.friends.all().contains(host)
 
-    last_post = user.blogpost_set.first()
+    friend_messages = list(host.received_messages.filter(sender=guest))
+    request_pending = len(friend_messages) > 0 and friend_messages[0].is_friend_request
+
+    last_post = host.blogpost_set.first()
     context = {
-        'host_user':user,
-        'is_logged_in':request.user.is_authenticated,
+        'host_user':host,
+        'is_logged_in':guest.is_authenticated,
         'are_friends':are_friends,
+        'request_pending':request_pending,
         'last_post':last_post,
     }
     return render(request, 'users/profile.html', context)
