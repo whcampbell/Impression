@@ -2,6 +2,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 from .models import CustomUser, BlogPost
 
+# Form to sign up a new user
 class UserRegistrationForm(UserCreationForm) :
     class Meta:
         model = CustomUser
@@ -13,6 +14,7 @@ class UserRegistrationForm(UserCreationForm) :
             ),
         }
 
+# Form to edit a user's profile information
 class CustomChangeForm(UserChangeForm) :
     # no ugly password message
     password = None
@@ -26,10 +28,12 @@ class CustomChangeForm(UserChangeForm) :
             ),
         }
 
+# Form to log in
 class LoginForm(forms.Form) :
     username = forms.CharField(label="Username", required=True, max_length=20)
     password = forms.CharField(label="Password", required=True, widget=forms.PasswordInput)
 
+# Form to create a new message
 class MessageForm(forms.Form) :
     title = forms.CharField(label="Title", required=True, max_length=64)
     body = forms.CharField(label='', required=True, widget=forms.Textarea)
@@ -39,6 +43,7 @@ class MessageForm(forms.Form) :
         choices=[],
     )
 
+# Form to create a new blog post
 class BlogForm(forms.ModelForm) :
 
     class Meta :

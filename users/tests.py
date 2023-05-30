@@ -29,6 +29,7 @@ def create_msg(user1, user2, title) :
 class UserTestCase(TestCase) :
     def setUp(self) :
         self.user = create_user("TEST", "test@gmail.com")
+        self.client = Client()
     
     def test_user_created(self) :
         self.assertEqual(self.user.username, "TEST")
@@ -38,6 +39,14 @@ class UserTestCase(TestCase) :
 
     def test_check_password(self) :
         self.assertTrue(self.user.check_password("thisisatest00"))
+
+    def test_edit_other_profile_forbidden(self) :
+        url = '/users/edit-profile/' + str(self.user.pk)
+        create_user("black_hat", "badguy@gmail.com")
+        self.client.login(username="black_hat", password="thisisatest00")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+
 
 
 # Test actions with the 'Message' model and views

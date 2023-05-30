@@ -11,6 +11,7 @@ from .models import CustomUser, Message, BlogPost
 from random import sample
 
 # Helpers
+
 def populate_recipient_choices(user) :
     friends = user.friends.all()
     choice_list = []
@@ -21,11 +22,14 @@ def populate_recipient_choices(user) :
     return choice_list
 
 # Views
+
+# for 'user signup' page
 class SignupView(CreateView) :
     form_class = UserRegistrationForm
     success_url = reverse_lazy("users:login")
     template_name = 'users/signup.html'
 
+# for 'write a blog post' page
 class WritePostView(CreateView) :
     form_class = BlogForm
     template_name = 'users/write_post.html'
@@ -43,6 +47,7 @@ class WritePostView(CreateView) :
         )
         return HttpResponseRedirect(self.get_success_url())
 
+# for 'edit profile info' page
 class UserUpdateView(UserPassesTestMixin, UpdateView) :
     model = CustomUser
     form_class = CustomChangeForm
@@ -55,12 +60,14 @@ class UserUpdateView(UserPassesTestMixin, UpdateView) :
     def test_func(self) :
         return self.request.user.pk == self.get_object().pk
 
+# for 'edit password' page
 class PasswordView(PasswordChangeView) :
     template_name = 'users/change_password.html'
 
     def get_success_url(self) :
         return reverse("users:profile", args=[self.request.user.username])
 
+# for login
 def login_view(request) :
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -85,10 +92,14 @@ def login_view(request) :
 
     return render(request, 'users/login.html', {'form':form})
 
+# for logout
 def logout_view(request) :
     logout(request)
     return HttpResponseRedirect(reverse('welcome'))
 
+# for a user's profile page. Any user can view,but the owner has special 
+# privilege. Other logged in viewers will also see an option to send
+# a friend request. 
 def profile(request, username) :
     host = CustomUser.objects.get(username=username)
     guest = request.user
@@ -109,6 +120,9 @@ def profile(request, username) :
     }
     return render(request, 'users/profile.html', context)
 
+# for the list of a user's messages. 
+# Only shows most recent message per sender. To see the full message
+# history from that sender, one must just enter that recent message.
 def messages(request) :
     if not request.user.is_authenticated :
         return HttpResponseRedirect(reverse('users:login'))
@@ -121,6 +135,8 @@ def messages(request) :
     # send 'er
     return render(request, 'users/messages.html', {'messages':messages})
 
+# for details on a single message.
+# shows all other messages from that sender. 
 def message_detail(request, id) :
     message = Message.objects.get(pk=id)
 
@@ -141,6 +157,7 @@ def message_detail(request, id) :
     }
     return render(request, 'users/message_detail.html', context)
 
+# for writing a message.
 def message_create(request) :
     if request.method == "POST" :
         form = MessageForm(request.POST)
@@ -172,7 +189,9 @@ def message_create(request) :
 
     return render(request, 'users/message_compose.html', {'form':form})
 
-def make_friends(request, sender) :
+# view activates when user accepts friend request in message
+# deletes the friend request message to reduce clutter
+def accept_friends(request, sender) :
     # consistent between code and tests - one is sender, two is receiver
     friend_1 = CustomUser.objects.get(username=sender)
     friend_2 = request.user
@@ -191,6 +210,8 @@ def make_friends(request, sender) :
 
     return HttpResponseRedirect(reverse('users:messages'))
 
+# view activates when the user clicks the 'send friend request' link
+# reloads the profile page afterwards
 def send_friends(request, receiver) :
     new_friend = CustomUser.objects.get(username=receiver)
 
@@ -204,15 +225,22 @@ def send_friends(request, receiver) :
 
     return HttpResponseRedirect(reverse('users:profile', args=[receiver]))
 
+# for viewing list of friends
 def manage_friends(request) :
     friends = request.user.friends.all()
     return render(request, 'users/manage_friends.html', {'friends':friends})
 
+# view activates when user clicks 'remove friend' link, deletes
+# that connection. Redirects back to friend list page.
 def remove_friend(request, username) :
     ex_friend = CustomUser.objects.get(username=username)
     request.user.friends.remove(ex_friend)
     return HttpResponseRedirect(reverse('users:manage_friends'))
 
+# for the 'gallery' page, which is this site's version of a 
+# 'discover' page. Instead of having an algorithm based on likes,
+# shares, and activity, this is random. Partly for simplicity, partly
+# for justice against the scroll. 
 def gallery(request) :
 
     # yes evaluating the whole set is gross
@@ -223,6 +251,8 @@ def gallery(request) :
 
     return render(request, 'users/gallery.html', {'users':users})
 
+# Detail page for reading a post. Also shows the full list of a user's
+# posts, whereas the profile only shows most recent
 def read_post(request, id) :
     post = get_object_or_404(BlogPost, pk=id)
     post_list = BlogPost.objects.filter(user=post.user).exclude(pk=post.pk)
@@ -232,6 +262,7 @@ def read_post(request, id) :
     }
     return render(request, 'users/read_post.html', context)
 
+# activates when a user deletes a post. Redirects to profile. 
 def delete_post(request, id) :
     post = get_object_or_404(BlogPost, pk=id)
 

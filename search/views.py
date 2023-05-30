@@ -3,6 +3,8 @@ from django.db.models import Q
 from users.models import CustomUser
 from .forms import SearchForm
 
+# I split this into a different app before I knew that apps need not be split up,
+# in fact it just makes imports more hairy. but hey here we are
 def search(request) :
     if (not request.GET) :
         form = SearchForm()
