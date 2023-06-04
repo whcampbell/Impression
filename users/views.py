@@ -104,11 +104,11 @@ def profile(request, username) :
     host = CustomUser.objects.get(username=username)
     guest = request.user
     are_friends = False
+    request_pending = False
     if guest.is_authenticated :
         are_friends = guest.friends.all().contains(host)
-
-    friend_messages = list(host.received_messages.filter(sender=guest))
-    request_pending = len(friend_messages) > 0 and friend_messages[0].is_friend_request
+        friend_messages = list(host.received_messages.filter(sender=guest))
+        request_pending = len(friend_messages) > 0 and friend_messages[0].is_friend_request
 
     last_post = host.blogpost_set.first()
     context = {
