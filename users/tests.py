@@ -102,7 +102,7 @@ class FriendsTestCase(TestCase) :
         self.assertEqual(response.status_code, 302)
         self.assertEqual(self.two.received_messages.all().count(), 1)
 
-    def test_make_friends(self) :
+    def test_accept_friends(self) :
         try :
             list(Message.objects.get(sender=self.one, receiver=self.two))
         except ObjectDoesNotExist :
@@ -112,7 +112,7 @@ class FriendsTestCase(TestCase) :
 
         request = self.factory.get("/users/make-friends/friend_1")
         request.user = self.two
-        response = views.make_friends(request, "friend_1")
+        response = views.accept_friends(request, "friend_1")
         self.assertEqual(response.status_code, 302)
         self.assertEqual(self.one.friends.count(), 1)
 
@@ -120,7 +120,7 @@ class FriendsTestCase(TestCase) :
         request = self.factory.get("/users/make-friends/friend_2")
         request.user = self.one
         try :
-            views.make_friends(request, "friend_2")
+            views.accept_friends(request, "friend_2")
             self.assertEqual(1, 2)
         except PermissionDenied :
             self.assertEqual(1, 1)
